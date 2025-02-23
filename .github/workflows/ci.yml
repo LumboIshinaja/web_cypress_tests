@@ -13,8 +13,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          build: npm run build
-          start: npm start
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: |
+          npm install
+
+      - name: Install Cypress binary
+        run: |
+          npx cypress install --unsafe-perm=true
+
+      - name: Build the application (if needed)
+        run: |
+          npm run build  # Only if your app needs building before testing
+
+      - name: Start the server (if needed)
+        run: |
+          npm start  # Only if you need a local server for testing
+
+      - name: Run Cypress Tests (UI & API)
+        run: |
+          npx cypress run --spec "cypress/e2e/uiTests/*.spec.js"
+          npx cypress run --spec "cypress/e2e/apiTests/*.spec.js"
+

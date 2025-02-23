@@ -10,27 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: cypress/browsers:node16.5.0-chrome94-ff93
-      options: --user 1001  # Add this to ensure proper file access permissions
+      options: --user 1001  # Ensure proper permissions for user
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
       - name: Install Dependencies
         run: |
           npm install --unsafe-perm=true
 
-      - name: Install Cypress binary
+      - name: Install Cypress Binary (ensure proper permissions)
         run: |
+          mkdir -p /home/runner/.cache/Cypress
+          sudo chown -R $USER /home/runner/.cache/Cypress
           npx cypress install --unsafe-perm=true
-
-      - name: Build Application (if necessary)
-        run: |
-          npm run build
-
-      - name: Start Application (if necessary)
-        run: |
-          npm start &
 
       - name: Run Cypress Tests (UI & API)
         run: |

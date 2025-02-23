@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: cypress/browsers:node16.5.0-chrome94-ff93
-      options: --user 1001  # Ensure proper permissions for user
+      options: --user 1001
 
     steps:
       - name: Checkout Repository
@@ -25,10 +25,12 @@ jobs:
         run: |
           npm install --unsafe-perm=true
 
-      - name: Install Cypress Binary (ensure proper permissions)
+      - name: Set Cypress Cache Location
         run: |
-          mkdir -p /home/runner/.cache/Cypress
-          sudo chown -R $USER /home/runner/.cache/Cypress
+          export CYPRESS_CACHE_FOLDER=$HOME/.cache/Cypress
+
+      - name: Install Cypress Binary
+        run: |
           npx cypress install --unsafe-perm=true
 
       - name: Run Cypress Tests (UI & API)

@@ -27,13 +27,11 @@ jobs:
 
     - name: Install Cypress binary
       run: |
-        npm install cypress --unsafe-perm=true
+        npx cypress install
 
     - name: Set Cypress permissions
       run: |
         chmod -R 777 ./node_modules/.bin/cypress
-        # Permissions on the Cypress binary if it's installed properly
-        chmod -R 777 ~/.cache/Cypress || echo "No cache directory, skipping permission change"
 
     - name: Run Cypress Tests (UI & API)
       run: |
@@ -51,3 +49,12 @@ jobs:
       with:
         name: cypress-videos
         path: cypress/videos/
+
+    # Caching Cypress binary to speed up the pipeline in future runs
+    - name: Cache Cypress binary
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/Cypress
+        key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-cypress-

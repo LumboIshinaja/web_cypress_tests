@@ -27,7 +27,7 @@ jobs:
 
     - name: Install Cypress binary
       run: |
-        npx cypress install
+        sudo npx cypress install
 
     - name: Set Cypress permissions
       run: |

@@ -1,0 +1,32 @@
+# Node modules
+node_modules/
+
+# Cypress configuration and test run files
+cypress/videos/
+cypress/screenshots/
+
+# Cypress fixtures, reports, and other generated files
+cypress/fixtures/
+cypress/results/
+
+# Environment and configuration files
+.env
+cypress.env.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+
+# npm debug files
+npm-debug.log*
+
+# package-lock.json for yarn projects
+yarn-debug.log*
+yarn-error.log*

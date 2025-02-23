@@ -1,14 +1,20 @@
-stages:
-  - test
+name: Cypress Tests
 
-test:
-  image: cypress/browsers:node16.14.0-chrome97-ff95  # Cypress Docker image with Chrome & Firefox
-  stage: test
-  script:
-    - npm ci  # Install dependencies with a clean slate
-    - npm start &  # Run the server in the background (if needed)
-    - npx cypress run  # Run Cypress tests
-  cache:
-    paths:
-      - node_modules/  # Cache node_modules to speed up future runs
-      - ~/.cache/Cypress/  # Cache Cypress binary to avoid redownloading
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start

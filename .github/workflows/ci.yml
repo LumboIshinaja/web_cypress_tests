@@ -25,19 +25,15 @@ jobs:
       run: |
         npm install --unsafe-perm=true
 
-    - name: Clear npm cache (if necessary)
-      run: |
-        npm cache clean --force
-
     - name: Install Cypress binary
       run: |
-        # Manually install Cypress without using npx
         npm install cypress --unsafe-perm=true
 
     - name: Set Cypress permissions
       run: |
         chmod -R 777 ./node_modules/.bin/cypress
-        chmod -R 777 ~/.cache/Cypress
+        # Permissions on the Cypress binary if it's installed properly
+        chmod -R 777 ~/.cache/Cypress || echo "No cache directory, skipping permission change"
 
     - name: Run Cypress Tests (UI & API)
       run: |

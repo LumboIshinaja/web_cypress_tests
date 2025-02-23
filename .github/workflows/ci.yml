@@ -1,61 +1,14 @@
-name: Cypress Tests CI/CD
+stages:
+  - test
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  cypress-run:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'  # Use appropriate version
-
-    - name: Install Dependencies
-      run: |
-        npm install --unsafe-perm=true
-
-    - name: Install Cypress binary
-      run: |
-        npx cypress install
-
-    - name: Ensure Cypress binary has proper permissions
-      run: |
-        sudo chmod -R 777 ./node_modules/.bin/cypress
-        sudo chmod -R 777 ~/.cache/Cypress
-
-    - name: Run Cypress Tests (UI & API)
-      run: |
-        npx cypress run --spec "cypress/e2e/uiTests/*.spec.js"
-        npx cypress run --spec "cypress/e2e/apiTests/*.spec.js"
-
-    - name: Upload Cypress Screenshots (if any)
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-screenshots
-        path: cypress/screenshots/
-
-    - name: Upload Cypress Videos (if any)
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-videos
-        path: cypress/videos/
-
-    # Caching Cypress binary to speed up the pipeline in future runs
-    - name: Cache Cypress binary
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache/Cypress
-        key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-cypress-
+test:
+  image: cypress/browsers:node16.14.0-chrome97-ff95  # Cypress Docker image with Chrome & Firefox
+  stage: test
+  script:
+    - npm ci  # Install dependencies with a clean slate
+    - npm start &  # Run the server in the background (if needed)
+    - npx cypress run  # Run Cypress tests
+  cache:
+    paths:
+      - node_modules/  # Cache node_modules to speed up future runs
+      - ~/.cache/Cypress/  # Cache Cypress binary to avoid redownloading

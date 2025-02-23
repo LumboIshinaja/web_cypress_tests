@@ -27,7 +27,7 @@ jobs:
 
     - name: Install Cypress binary
       run: |
-        sudo npx cypress install
+       npx cypress install --unsafe-perm=true
 
     - name: Set Cypress permissions
       run: |

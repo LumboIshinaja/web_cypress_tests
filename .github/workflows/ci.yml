@@ -25,13 +25,14 @@ jobs:
       run: |
         npm install --unsafe-perm=true
 
+    - name: Ensure Cypress binary has proper permissions
+      run: |
+        sudo chmod -R 777 ./node_modules/.bin/cypress
+        sudo chmod -R 777 ~/.cache/Cypress
+
     - name: Install Cypress binary
       run: |
         npx cypress install
-
-    - name: Set Cypress permissions
-      run: |
-        chmod -R 777 ./node_modules/.bin/cypress
 
     - name: Run Cypress Tests (UI & API)
       run: |

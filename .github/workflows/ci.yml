@@ -23,7 +23,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        npm install
+        npm install --unsafe-perm=true
 
     - name: Run Cypress Tests (UI & API)
       run: |

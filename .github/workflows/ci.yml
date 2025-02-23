@@ -25,6 +25,10 @@ jobs:
       run: |
         npm install --unsafe-perm=true
 
+    - name: Install Cypress binary
+      run: |
+        npx cypress install
+
     - name: Set Cypress permissions
       run: |
         chmod +x ./node_modules/.bin/cypress

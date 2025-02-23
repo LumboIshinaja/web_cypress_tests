@@ -25,6 +25,10 @@ jobs:
       run: |
         npm install --unsafe-perm=true
 
+    - name: Set Cypress permissions
+      run: |
+        chmod +x ./node_modules/.bin/cypress
+
     - name: Run Cypress Tests (UI & API)
       run: |
         npx cypress run --spec "cypress/e2e/uiTests/*.spec.js"

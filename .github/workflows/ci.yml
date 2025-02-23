@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -20,22 +20,21 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
+          npm install --unsafe-perm=true
 
       - name: Install Cypress binary
         run: |
           npx cypress install --unsafe-perm=true
 
-      - name: Build the application (if needed)
+      - name: Build Application (if necessary)
         run: |
-          npm run build  # Only if your app needs building before testing
+          npm run build  # Ensure you have a "build" script in your package.json
 
-      - name: Start the server (if needed)
+      - name: Start Application (if necessary)
         run: |
-          npm start  # Only if you need a local server for testing
+          npm start &  # Start the application in the background
 
       - name: Run Cypress Tests (UI & API)
         run: |
           npx cypress run --spec "cypress/e2e/uiTests/*.spec.js"
           npx cypress run --spec "cypress/e2e/apiTests/*.spec.js"
-

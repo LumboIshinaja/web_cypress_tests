@@ -97,8 +97,6 @@ cypress/
 │   ├── dropDownPage.js          # Drop Down page
 │   └── fileUploadPage.js        # File Upload page
 │
-│── utils/                       # Utility Functions
-│   └── apiClient.js             # API request handler
 │
 ├── cypress.config.js            # Cypress configuration file
 ├── package-lock.json            # Lock file for installed dependencies

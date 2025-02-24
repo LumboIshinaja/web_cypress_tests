@@ -9,6 +9,7 @@ module.exports = defineConfig({
       runMode: 2,
       openMode: 0,
     },
+    screenshotOnRunFailure: false,
     setupNodeEvents(on, config) {      
       config.baseUrl = 'https://reqres.in/api'; // Ensure this is set here
 

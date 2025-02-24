@@ -3,34 +3,37 @@ import { validateSchema } from "../../support/schemaValidator";
 
 describe('API PATCH Update User Test Suite', () => {
   let userId;
+  let patchResponse;
 
   beforeEach(function() {
-    cy.getUsers(1, 1).then((response) => {
-      userId = response.body.data[0].id;
+    const endpoint = '/users';
+
+    // Get user data
+    cy.getRequest(endpoint).then((response) => {
+      userId = response.body.data[0].id;  // Get user ID for updating
+    });
+
+    // Send PATCH request
+    cy.patchRequest(`/users/${userId}`).then((response) => {
+      patchResponse = response;  // Store the response for later use
     });
   });
 
   it('Verify if PATCH /users/{id} returns status 200', function() {
-    cy.patchUser(userId).then((response) => {
-      expect(response.status).to.eq(200);
-    });
+    expect(patchResponse.status).to.eq(200);  // Assert status
   });
 
   it('Verify if PATCH /users/{id} response matches the user update schema', function() {
-    cy.patchUser(userId).then((response) => {
-      validateSchema(response.body, userUpdateSchema);
-    });
+    validateSchema(patchResponse.body, userUpdateSchema);  // Validate schema for PATCH response
   });
 
   it('Verify if PATCH /users/{id} updates the timestamp correctly', function() {
     const currentTimestamp = new Date();
     const expectedTimestamp = `${currentTimestamp.getHours()}:${currentTimestamp.getMinutes()}`;
 
-    cy.patchUser(userId).then((response) => {
-      const responseTimestamp = new Date(response.body.updatedAt);
-      const formattedResponseTimestamp = `${responseTimestamp.getHours()}:${responseTimestamp.getMinutes()}`;
+    const responseTimestamp = new Date(patchResponse.body.updatedAt);
+    const formattedResponseTimestamp = `${responseTimestamp.getHours()}:${responseTimestamp.getMinutes()}`;
 
-      expect(formattedResponseTimestamp).to.eq(expectedTimestamp);
-    });
+    expect(formattedResponseTimestamp).to.eq(expectedTimestamp);  // Assert timestamp
   });
 });

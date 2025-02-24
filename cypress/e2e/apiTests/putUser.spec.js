@@ -3,39 +3,37 @@ import { validateSchema } from "../../support/schemaValidator";
 
 describe('API PUT Update User Test Suite', () => {
   let userId;
+  let getUserResponse;
+  let putResponse;
 
   beforeEach(function() {
-    cy.getUsers(1, 1).then((response) => {
-      console.log(response);
-      userId = response.body.data[0].id;
+    const endpoint = '/users';
+
+    cy.getRequest(endpoint).then((response) => {
+      getUserResponse = response;
+      userId = getUserResponse.body.data[0].id;
+
+      cy.putRequest(`/users/${userId}`).then((response) => {
+        putResponse = response;  // Store the PUT response for later use
+      });
     });
   });
 
   it('Verify if PUT /users/{id} returns status 200', function() {
-    cy.updateUser(userId).then((response) => {
-      expect(response.status).to.eq(200);  
-    });
+    expect(putResponse.status).to.eq(200);
   });
 
   it('Verify if PUT /users/{id} response matches the user update schema', function() {
-    cy.updateUser(userId).then((response) => {        
-      validateSchema(response.body, userUpdateSchema);      
-    });
+    validateSchema(putResponse.body, userUpdateSchema);
   });
 
   it('Verify if PUT /users/{id} updates the timestamp correctly', function() {
     const currentTimestamp = new Date();
-  
-    // Format the current timestamp to "HH:mm" format (hours and minutes)
     const expectedTimestamp = `${currentTimestamp.getHours()}:${currentTimestamp.getMinutes()}`;
-  
-    cy.updateUser(userId).then((response) => {
-      // Convert the 'updatedAt' string from the response into a Date object
-      const responseTimestamp = new Date(response.body.updatedAt);
-      // Format the response's 'updatedAt' timestamp to "HH:mm" format (hours and minutes)
-      const formattedResponseTimestamp = `${responseTimestamp.getHours()}:${responseTimestamp.getMinutes()}`;
-  
-      expect(formattedResponseTimestamp).to.eq(expectedTimestamp);
-    });
+
+    const responseTimestamp = new Date(putResponse.body.updatedAt);
+    const formattedResponseTimestamp = `${responseTimestamp.getHours()}:${responseTimestamp.getMinutes()}`;
+
+    expect(formattedResponseTimestamp).to.eq(expectedTimestamp);
   });
 });

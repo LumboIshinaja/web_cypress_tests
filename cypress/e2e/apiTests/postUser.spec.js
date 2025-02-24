@@ -2,17 +2,19 @@ import { validateSchema } from "../../support/schemaValidator";
 import { registerSchema } from "../../support/schemas/allSchemas";
 
 describe('API POST Register Test Suite', () => {
-  let registerData; 
+  let registerData;
 
   beforeEach(function() {
     cy.fixture('register').then((data) => {
-      registerData = data;  
+      registerData = data;
     });
   });
 
   context('Valid Registration', () => {
+    let validResponse;
+
     beforeEach(function() {
-      cy.registerUser(registerData[0]).as('validResponse');
+      cy.postRequest('/register', registerData[0]).as('validResponse');
     });
 
     it('Verify if response status is 200', function() {
@@ -32,17 +34,19 @@ describe('API POST Register Test Suite', () => {
         expect(response.duration).to.be.lessThan(1000);  // 1 second
       });
     });
-    
+
     it('Verify if id is a positive integer', function() {
       cy.get('@validResponse').then((response) => {
         expect(response.body.id).to.be.a('number').and.to.be.greaterThan(0);
       });
-    });    
+    });
   });
 
   context('Invalid Registration', () => {
+    let invalidResponse;
+
     beforeEach(function() {
-      cy.registerUser(registerData[1]).as('invalidResponse');
+      cy.postRequest('/register', registerData[1]).as('invalidResponse');
     });
 
     it('Verify if response status is 400 for invalid registration', function() {
@@ -58,7 +62,7 @@ describe('API POST Register Test Suite', () => {
     });
 
     it('Verify if missing fields return an error', function() {
-      cy.registerUser({}).then((response) => {
+      cy.postRequest('/register', {}).then((response) => {
         expect(response.status).to.eq(400);
         expect(response.body).to.have.property('error');
       });
